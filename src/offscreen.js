@@ -29,5 +29,15 @@ chrome.runtime.onMessage.addListener(async (msg, sender) => {
     const tabId = msg.tabId;
     if (audioContexts[tabId]) {
       audioContexts[tabId].gainNode.gain.value = msg.value;
-    }  }
+    }  
+} else if (msg.action == "removeTab") {
+    const tabId = msg.tabId;
+    if (audioContexts[tabId]) {
+      audioContexts[tabId].gainNode.disconnect();
+      audioContexts[tabId].audioContext.close();
+      delete audioContexts[tabId];
+      console.log(`AudioContext de tab ${tabId} eliminado`);
+    }
+}
+
 });

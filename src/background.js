@@ -24,3 +24,6 @@ chrome.runtime.onMessage.addListener(async (msg) => {
     chrome.runtime.sendMessage(msg);
   }
 });
+chrome.tabs.onRemoved.addListener((tabId, removeInfo) => {
+  chrome.runtime.sendMessage({ action: "removeTab", tabId });
+});
