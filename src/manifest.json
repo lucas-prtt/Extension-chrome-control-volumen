@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Extension test",
+  "name": "Controlador de volumen",
   "version": "1.0",
-  "description": "A basic Chrome extension",
+  "description": "Una extension de chrome que aumenta o reduce el volumen de una o mas pestañas en tiempo real",
   "permissions": [
     "tabs",
     "scripting",

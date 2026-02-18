@@ -9,7 +9,7 @@ async function ensureOffscreen() {
   }
 }
 
-chrome.runtime.onMessage.addListener(async (msg) => {
+chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
   if (msg.action === "initAudio") {
     await ensureOffscreen();
 
@@ -22,6 +22,9 @@ chrome.runtime.onMessage.addListener(async (msg) => {
     });
   } else if (msg.action === "setVolume") {
     chrome.runtime.sendMessage(msg);
+  } else if (msg.action === "getVolume") {
+    chrome.runtime.sendMessage(msg, (response) => sendResponse(response));
+    return true
   }
 });
 chrome.tabs.onRemoved.addListener((tabId, removeInfo) => {
