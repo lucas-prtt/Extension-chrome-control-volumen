@@ -1,18 +1,18 @@
-const audioContexts = {};  // tabId -> { audioContext, gainNode, volume }
+const audioContexts = {}; // tabId -> { audioContext, gainNode, volume }
 
 chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
   if (msg.action === "initAudio") {
-    const tabId = msg.tabId
-    const streamId = msg.streamId
+    const tabId = msg.tabId;
+    const streamId = msg.streamId;
 
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: {
         mandatory: {
           chromeMediaSource: "tab",
-          chromeMediaSourceId: streamId
-        }
+          chromeMediaSourceId: streamId,
+        },
       },
-      video: false
+      video: false,
     });
 
     audioContext = new AudioContext();
@@ -21,17 +21,15 @@ chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
     source.connect(gainNode);
     gainNode.connect(audioContext.destination);
 
-    audioContexts[tabId] = { audioContext, gainNode, volume: 1};
+    audioContexts[tabId] = { audioContext, gainNode, volume: 1 };
     console.log(`AudioContext activo para tab ${tabId}`);
-
-
-} else if (msg.action === "setVolume") {
+  } else if (msg.action === "setVolume") {
     const tabId = msg.tabId;
     if (audioContexts[tabId]) {
       audioContexts[tabId].gainNode.gain.value = msg.value;
-      audioContexts[tabId].volume = msg.value
-    }  
-} else if (msg.action == "removeTab") {
+      audioContexts[tabId].volume = msg.value;
+    }
+  } else if (msg.action == "removeTab") {
     const tabId = msg.tabId;
     if (audioContexts[tabId]) {
       audioContexts[tabId].gainNode.disconnect();
@@ -39,11 +37,10 @@ chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
       delete audioContexts[tabId];
       console.log(`AudioContext de tab ${tabId} eliminado`);
     }
-} else if (msg.action === "getVolume") {
-    tabId = msg.tabId
+  } else if (msg.action === "getVolume") {
+    tabId = msg.tabId;
     const vol = audioContexts[tabId]?.volume ?? 1;
     sendResponse({ volume: vol });
-    return true
+    return true;
   }
-
 });

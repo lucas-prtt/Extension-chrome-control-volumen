@@ -3,13 +3,7 @@
   "name": "Controlador de volumen",
   "version": "1.0",
   "description": "Una extension de chrome que aumenta o reduce el volumen de una o mas pestañas en tiempo real",
-  "permissions": [
-    "tabs",
-    "scripting",
-    "tabCapture",
-    "activeTab",
-    "offscreen"
-  ],  
+  "permissions": ["tabs", "scripting", "tabCapture", "activeTab", "offscreen"],
   "action": {
     "default_popup": "popup.html",
     "default_icon": "icon.png"
