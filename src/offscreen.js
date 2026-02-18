@@ -1,13 +1,15 @@
-let audioContext;
-let gainNode;
+const audioContexts = {};  // tabId -> { audioContext, gainNode }
 
-chrome.runtime.onMessage.addListener(async (msg) => {
+chrome.runtime.onMessage.addListener(async (msg, sender) => {
   if (msg.action === "initAudio") {
+    const tabId = msg.tabId
+    const streamId = msg.streamId
+
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: {
         mandatory: {
           chromeMediaSource: "tab",
-          chromeMediaSourceId: msg.streamId
+          chromeMediaSourceId: streamId
         }
       },
       video: false
@@ -19,8 +21,13 @@ chrome.runtime.onMessage.addListener(async (msg) => {
     source.connect(gainNode);
     gainNode.connect(audioContext.destination);
 
-    console.log("AudioContext activo en offscreen document");
-  } else if (msg.action === "setVolume" && gainNode) {
-    gainNode.gain.value = parseFloat(msg.value);
-  }
+    audioContexts[tabId] = { audioContext, gainNode };
+    console.log(`AudioContext activo para tab ${tabId}`);
+
+
+} else if (msg.action === "setVolume") {
+    const tabId = msg.tabId;
+    if (audioContexts[tabId]) {
+      audioContexts[tabId].gainNode.gain.value = msg.value;
+    }  }
 });

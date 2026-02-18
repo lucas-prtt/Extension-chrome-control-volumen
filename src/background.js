@@ -10,17 +10,15 @@ async function ensureOffscreen() {
 }
 
 chrome.runtime.onMessage.addListener(async (msg) => {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-
   if (msg.action === "initAudio") {
     await ensureOffscreen();
 
-    chrome.tabCapture.getMediaStreamId({ targetTabId: tab.id }, (streamId) => {
+    chrome.tabCapture.getMediaStreamId({ targetTabId: msg.tabId }, (streamId) => {
       if (chrome.runtime.lastError) {
         console.error(chrome.runtime.lastError);
         return;
       }
-      chrome.runtime.sendMessage({ action: "initAudio", streamId });
+      chrome.runtime.sendMessage({ action: "initAudio", streamId: streamId, tabId : msg.tabId});
     });
   } else if (msg.action === "setVolume") {
     chrome.runtime.sendMessage(msg);
