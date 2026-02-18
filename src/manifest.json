@@ -3,9 +3,18 @@
   "name": "Extension test",
   "version": "1.0",
   "description": "A basic Chrome extension",
-  "permissions": ["tabCapture"],
+  "permissions": [
+    "tabs",
+    "scripting",
+    "tabCapture",
+    "activeTab",
+    "offscreen"
+  ],  
   "action": {
     "default_popup": "popup.html",
     "default_icon": "icon.png"
+  },
+  "background": {
+    "service_worker": "background.js"
   }
 }
