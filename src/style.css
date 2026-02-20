@@ -1,0 +1,82 @@
+body {
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+  background: #1e1e1e;
+  color: #fff;
+  padding: 20px;
+  width: 340px;
+}
+h2 {
+  font-size: 15px;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+.section {
+  background: #2b2b2b;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+.control {
+  margin-bottom: 16px;
+}
+.label-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+input[type="range"] {
+  width: 100%;
+  accent-color: #4caf50;
+}
+.value {
+  opacity: 0.8;
+}
+/* Toggle */
+.toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.switch {
+  position: relative;
+  width: 40px;
+  height: 20px;
+}
+.switch input {
+  display: none;
+}
+.slider-toggle {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: #555;
+  border-radius: 20px;
+  transition: 0.3s;
+}
+.slider-toggle:before {
+  content: "";
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  top: 2px;
+  background: white;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+input:checked + .slider-toggle {
+  background: #4caf50;
+}
+input:checked + .slider-toggle:before {
+  transform: translateX(20px);
+}
+.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}

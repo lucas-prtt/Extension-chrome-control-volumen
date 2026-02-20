@@ -24,49 +24,73 @@ chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
     compressor.ratio.value = 20;
     compressor.attack.value = 0.001;
     compressor.release.value = 0.05;
-    
-    setInterval(() => {
-      console.log(";;;;;;;;;;;;;;;;;;;;;;;")
-      console.log(compressor.reduction);
-      console.log(compressor.threshold.value)
-      console.log(compressor.ratio.value)
-      console.log(compressor.knee.value)
-      console.log(compressor.attack.value)
-      console.log(compressor.release.value)
-      console.log("::::::::::::::::::::::::::")
-    }, 1000);
-    
-    source.connect(gainNode);
-    gainNode.connect(compressor);
-    compressor.connect(audioContext.destination);
 
-    audioContexts[tabId] = { audioContext, gainNode, compressor, settings:{volume: 1, ratio: 20, threshold : -30, attack:0.001, release:0.05}};
+    source.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    audioContexts[tabId] = {
+      audioContext,
+      gainNode,
+      compressor,
+      settings: {
+        volume: 1,
+        ratio: 20,
+        threshold: -30,
+        attack: 0.001,
+        release: 0.05,
+        compressorEnabled: false,
+      },
+    };
+
+    setInterval(() => {
+      console.log(";;;;;;;;;;;;;;;;;;;;;;;");
+      console.log(compressor.reduction);
+      console.log(compressor.threshold.value);
+      console.log(compressor.ratio.value);
+      console.log(compressor.knee.value);
+      console.log(compressor.attack.value);
+      console.log(compressor.release.value);
+      console.log(audioContexts[tabId].settings);
+      console.log("::::::::::::::::::::::::::");
+    }, 1000);
     console.log(`AudioContext activo para tab ${tabId}`);
   } else if (msg.action === "setSettings") {
     const tabId = msg.tabId;
-    const gn = audioContexts[tabId].gainNode
-    const cmp = audioContexts[tabId].compressor
-    const sett = audioContexts[tabId].settings
+    const gn = audioContexts[tabId].gainNode;
+    const cmp = audioContexts[tabId].compressor;
+    const sett = audioContexts[tabId].settings;
     if (audioContexts[tabId]) {
-      if(msg.volume !== undefined){
+      if (msg.compressorEnabled !== undefined) {
+        sett.compressorEnabled = msg.compressorEnabled;
+        if (!msg.compressorEnabled) {
+          gainNode.disconnect();
+          compressor.disconnect();
+          gainNode.connect(audioContexts[tabId].audioContext.destination);
+        } else if (msg.compressorEnabled) {
+          gainNode.disconnect();
+          gainNode.connect(compressor);
+          compressor.connect(audioContexts[tabId].audioContext.destination);
+        }
+      }
+      if (msg.volume !== undefined) {
         sett.volume = msg.volume;
         gn.gain.value = msg.volume;
       }
-      if(msg.ratio !== undefined ){
+      if (msg.ratio !== undefined) {
         sett.ratio = msg.ratio;
-        cmp.ratio.value = msg.ratio
+        cmp.ratio.value = msg.ratio;
       }
-      if(msg.threshold !== undefined ){
+      if (msg.threshold !== undefined) {
         sett.threshold = msg.threshold;
-        cmp.threshold.value = msg.threshold
+        cmp.threshold.value = msg.threshold;
       }
-      if(msg.attack !== undefined ){
+      if (msg.attack !== undefined) {
         sett.attack = msg.attack;
-        cmp.attack.value = msg.attack
+        cmp.attack.value = msg.attack;
       }
-      if(msg.release !== undefined ){
+      if (msg.release !== undefined) {
         sett.release = msg.release;
-        cmp.release.value = msg.release
+        cmp.release.value = msg.release;
       }
     }
   } else if (msg.action == "removeTab") {
