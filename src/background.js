@@ -12,7 +12,6 @@ async function ensureOffscreen() {
 chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
   if (msg.action === "initAudio") {
     await ensureOffscreen();
-
     chrome.tabCapture.getMediaStreamId(
       { targetTabId: msg.tabId },
       (streamId) => {
@@ -27,9 +26,9 @@ chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
         });
       },
     );
-  } else if (msg.action === "setVolume") {
+  } else if (msg.action === "setSettings") {
     chrome.runtime.sendMessage(msg);
-  } else if (msg.action === "getVolume") {
+  } else if (msg.action === "getSettings") {
     chrome.runtime.sendMessage(msg, (response) => sendResponse(response));
     return true;
   }
